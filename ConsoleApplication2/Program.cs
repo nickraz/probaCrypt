@@ -23,7 +23,7 @@ namespace ConsoleApplication2
 
         private NetworkStream Ns = null;
 
-        public static void md5(string source)
+        /*public static void md5(string source)
         {
             byte[] data = System.Text.Encoding.UTF8.GetBytes(source);
             MD5 md = MD5.Create();
@@ -31,7 +31,7 @@ namespace ConsoleApplication2
             Console.WriteLine(System.Text.Encoding.UTF8.GetString(cryptoData));
             md.Clear();
         }
-
+        */
         public void Listen()
         {
             try { new BluetoothClient(); }
@@ -104,8 +104,8 @@ namespace ConsoleApplication2
 
         private static string readProtectedProcesses()
         {
-          aes.Key = generateKeyAndIV(32);
-          aes.IV = generateKeyAndIV(16);
+            aes.Key = generateKeyAndIV(32);
+            aes.IV = generateKeyAndIV(16);
             FileStream fs = new FileStream("protect.dat", FileMode.Open, FileAccess.Read);
             CryptoStream cs = new CryptoStream(fs, aes.CreateDecryptor(), CryptoStreamMode.Read);
             StreamReader sr = new StreamReader(cs);
@@ -114,13 +114,23 @@ namespace ConsoleApplication2
             return result;
         }
 
+        public static string MD5(string password)
+        {
+            var textBytes = System.Text.Encoding.Default.GetBytes(password);
+            var cryptHandler = new MD5CryptoServiceProvider();
+            var hash = cryptHandler.ComputeHash(textBytes);
+            var ret = "";
+            foreach (var a in hash)
+                ret += a.ToString("x2");
+            return ret;
+        }
+
         public static void Main(string[] args)
         {
-            //Program p = new Program();
             string procs = "chrome|filezilla|firefox";
-          // saveProtectedProcesses(procs);
             Console.WriteLine(readProtectedProcesses());
-            md5("Пароль");
+            //md5("Пароль");
+            Console.WriteLine(MD5(MD5("123123")));
             Console.ReadKey();
         }
     }
